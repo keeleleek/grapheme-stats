@@ -6,21 +6,30 @@ import csv
 
 # set up argument parsing
 parser = argparse.ArgumentParser()
-parser.add_argument("infile", help="the name of the input file",
+parser.add_argument("infile",
+                    help="the name of the input file",
                     type=str)
+parser.add_argument("-inencoding",
+                    help="the encoding of the input file",
+                    type=str,
+                    default=None)
+parser.add_argument("-outencoding",
+                    help="the encoding of the output file",
+                    type=str,
+                    default=None)
 args = parser.parse_args()
 
 
 # count the grapheme occurrences
 grapheme_counts = dict()
-with open(args.infile, "r") as infile:
+with open(args.infile, "r", encoding=args.inencoding) as infile:
     for graph in grapheme.graphemes(infile.read()):
         grapheme_counts.setdefault(graph, 0)
         grapheme_counts[graph] += 1
         
         
 # print out the summary
-with open(args.infile + '.csv', 'w', newline='') as csvfile:
+with open(args.infile + '.csv', 'w', newline='', encoding=args.outencoding) as csvfile:
     columns = ['grapheme', 'count', 'number of codepoints', 'codepoint names']
     statistics_file = csv.DictWriter(csvfile, fieldnames=columns)
     statistics_file.writeheader()
